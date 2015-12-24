@@ -110,7 +110,13 @@ $.selectionchange = (function (undefined) {
     var rNew = getSelectionRange(doc);
     if (!sameRange(rNew, rOld)) {
       ranges.set(doc, rNew);
-      setTimeout(doc.dispatchEvent.bind(doc, new Event('selectionchange')), 0);
+
+      // !-- FOUNDRY HACK --! //
+      // Creating a new "Event" on Joomla 2.5 will hit an issue with MooTools.
+      // This is coming from an environment where jQuery and MooTools may coexist.
+      var customEvent = new CustomEvent('selectionchange');
+
+      setTimeout(doc.dispatchEvent.bind(doc, customEvent), 0);
     }
   }
 
